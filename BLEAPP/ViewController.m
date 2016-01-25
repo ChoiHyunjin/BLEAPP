@@ -101,18 +101,32 @@
 
     // 준비완료 시 버튼 생성
     UIButton* startButn = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
-    [startButn setTitle: @"Start" forState:UIControlStateNormal];
+    [startButn setTitle: @"Button 1" forState:UIControlStateNormal];
     [startButn setBackgroundColor:[UIColor darkGrayColor]];
     [startButn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [startButn addTarget:self action:@selector(sendStartData) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:startButn];
+    
+    UIButton* startButn2 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH + 30, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
+    [startButn2 setTitle: @"Button 2" forState:UIControlStateNormal];
+    [startButn2 setBackgroundColor:[UIColor darkGrayColor]];
+    [startButn2 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [startButn2 addTarget:self action:@selector(sendStartData2) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:startButn2];
 }
 
 -(void)sendStartData{
-    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0xee};           //보낼 데이터
+    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x01};           //보낼 데이터
     NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
-    state.text = @"측정시작";
+    state.text = @"1번 측정시작";
+}
+
+-(void)sendStartData2{
+    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
+    [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
+    state.text = @"2번 측정시작";
 }
 
 -(void)sendDataToPeripheral : (CBPeripheral*)peripheral
