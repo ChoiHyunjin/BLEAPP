@@ -70,7 +70,10 @@
     [central stopScan];
     [peripheral setDelegate:self];
     state.text = @"Connected";
-    [peripheral discoverServices:@[[CBUUID UUIDWithString:SERVICE_UUID]]];
+    if([discoveredPeripheral.name isEqual:@"PAARBand"])
+        [peripheral discoverServices:@[[CBUUID UUIDWithString:TEST_SERVICE_UUID]]];
+    else
+        [peripheral discoverServices:@[[CBUUID UUIDWithString:SERVICE_UUID]]];
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error{
@@ -101,21 +104,26 @@
 
     // 준비완료 시 버튼 생성
     UIButton* startButn = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
-    [startButn setTitle: @"Button 1" forState:UIControlStateNormal];
     [startButn setBackgroundColor:[UIColor darkGrayColor]];
     [startButn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    if([discoveredPeripheral.name isEqual:@"PAAR Watch"])
+
+    // PAAR Watch만 여러 버튼 생성
+    if([discoveredPeripheral.name isEqual:@"PAAR Watch"]){
         [startButn addTarget:self action:@selector(sendStartData) forControlEvents:UIControlEventTouchUpInside];
-    else
+        [startButn setTitle: @"왼팔 측정" forState:UIControlStateNormal];
+
+        UIButton* startButn2 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH + 15, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
+        [startButn2 setTitle: @"오른팔 측정" forState:UIControlStateNormal];
+        [startButn2 setBackgroundColor:[UIColor darkGrayColor]];
+        [startButn2 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [startButn2 addTarget:self action:@selector(sendStartData2) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:startButn2];
+    }
+    else{
         [startButn addTarget:self action:@selector(sendStartDataToBand) forControlEvents:UIControlEventTouchUpInside];
+        [startButn setTitle: @"Start" forState:UIControlStateNormal];
+    }
     [self.view addSubview:startButn];
-    
-    UIButton* startButn2 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH + 30, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
-    [startButn2 setTitle: @"Button 2" forState:UIControlStateNormal];
-    [startButn2 setBackgroundColor:[UIColor darkGrayColor]];
-    [startButn2 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [startButn2 addTarget:self action:@selector(sendStartData2) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:startButn2];
 }
 
 -(void)sendStartDataToBand{

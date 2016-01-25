@@ -11,6 +11,7 @@
 #import "TableViewController.h"
 
 #define SERVICE_UUID                        @"2650"
+#define TEST_SERVICE_UUID                   @"2651"
 #define NOTIFYCATION_UUID                   @"7f01"
 #define SEND_UUID                           @"7f02"     // 스마트폰 -> 밴드
 #define INDICATION_UUID                     @"7F03"     // 밴드 -> 스마트폰
@@ -24,7 +25,7 @@
 #define DEGREE_STATE_ING                    1
 #define DEGREE_STATE_FINISH                 2
 
-#define BUTN_SIZE_WIDTH                     50
+#define BUTN_SIZE_WIDTH                     85
 #define BUTN_SIZE_HEIGHT                    25
 #define BUTN_SIZE_Y                         321
 #define BUTN_SIZE_X                         138
