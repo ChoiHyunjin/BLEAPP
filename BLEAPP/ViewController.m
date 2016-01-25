@@ -104,7 +104,10 @@
     [startButn setTitle: @"Button 1" forState:UIControlStateNormal];
     [startButn setBackgroundColor:[UIColor darkGrayColor]];
     [startButn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [startButn addTarget:self action:@selector(sendStartData) forControlEvents:UIControlEventTouchUpInside];
+    if([discoveredPeripheral.name isEqual:@"PAAR Watch"])
+        [startButn addTarget:self action:@selector(sendStartData) forControlEvents:UIControlEventTouchUpInside];
+    else
+        [startButn addTarget:self action:@selector(sendStartDataToBand) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:startButn];
     
     UIButton* startButn2 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH + 30, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
@@ -113,6 +116,13 @@
     [startButn2 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [startButn2 addTarget:self action:@selector(sendStartData2) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:startButn2];
+}
+
+-(void)sendStartDataToBand{
+    UInt8 dataInUint[7] = {0x88, 0xaa, 0x11, 0x03, 0xa4, 0x01, 0x01};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:7];
+    [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
+    state.text = @"1번 측정시작";
 }
 
 -(void)sendStartData{
