@@ -1,0 +1,24 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "5be1d8c2-9ca9-284b-9e1c-e2679a3fa833++8987" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5be1d8c2-9ca9-284b-9e1c-e2679a3fa833++8987" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "EA665DCF-33F9-4F6B-ABF6-D23C6A38CD40",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5be1d8c2-9ca9-284b-9e1c-e2679a3fa833++8987" : "WorkSpace\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "BLEAPP",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "BLEAPP\/BLEAPP.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/csosp.org:8080\/svn\/CSOS",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5be1d8c2-9ca9-284b-9e1c-e2679a3fa833++8987"
+    }
+  ]
+}
