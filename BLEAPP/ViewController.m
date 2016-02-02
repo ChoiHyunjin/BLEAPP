@@ -134,17 +134,17 @@
 }
 
 -(void)sendStartData{
-    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x01};           //보낼 데이터
+    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02, 0x03, 0x01};           //보낼 데이터
     NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
-    state.text = @"1번 측정시작";
+    state.text = @"왼팔 측정시작";
 }
 
 -(void)sendStartData2{
-    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02};           //보낼 데이터
+    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02, 0x03, 0x02};           //보낼 데이터
     NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
-    state.text = @"2번 측정시작";
+    state.text = @"오른팔 측정시작";
 }
 
 -(void)sendDataToPeripheral : (CBPeripheral*)peripheral
