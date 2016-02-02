@@ -134,15 +134,15 @@
 }
 
 -(void)sendStartData{
-    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02, 0x03, 0x01};           //보낼 데이터
-    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
+    UInt8 dataInUint[6] = {0x88, 0x61, 0x11, 0x02, 0x03, 0x01};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:6];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
     state.text = @"왼팔 측정시작";
 }
 
 -(void)sendStartData2{
-    UInt8 dataInUint[5] = {0x88, 0x61, 0x11, 0x01, 0x02, 0x03, 0x02};           //보낼 데이터
-    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:5];
+    UInt8 dataInUint[6] = {0x88, 0x61, 0x11, 0x02, 0x03, 0x02};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:6];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
     state.text = @"오른팔 측정시작";
 }
@@ -160,13 +160,17 @@
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if(error)
         NSLog(@"update value error : %@",error);
-    NSLog(@"%@",characteristic.value);
-    NSMutableArray* recvDataArray = [self divideData:characteristic.value];
-    NSLog(@"string = %@",recvDataArray);
+//    NSLog(@"%@",characteristic.value);
+    NSArray* recvDataArray = [self divideData:characteristic.value];
+//    NSLog(@"string = %@",recvDataArray);
+    
     switch ([recvDataArray[6] intValue]) {
+            
         case SVC_CALCULATE_DEGREE_NUM:
             state.font = [UIFont fontWithName:@"font" size:20];
+            
             switch ([recvDataArray[7] intValue]) {
+                    
                 case DEGREE_STATE_FINISH:
                     state.text = @"측정 완료";
                     break;
