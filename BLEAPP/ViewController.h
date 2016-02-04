@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "TableViewController.h"
-#import "PreAlarmPickerView.h"
-#import "AfterAlarmPickerView.h"
-#import "AlarmMethodPickerView.h"
 
 #define SERVICE_UUID                        @"2650"
 #define TEST_SERVICE_UUID                   @"2651"
@@ -32,7 +29,7 @@
 #define DEGREE_STATE_OFFLINE                4
 #define DEGREE_STATE_ERROR                  5
 
-#define BUTN_SIZE_WIDTH                     85
+#define BUTN_SIZE_WIDTH                     90
 #define BUTN_SIZE_HEIGHT                    30
 #define BUTN_SIZE_Y                         321
 #define BUTN_SIZE_X                         138
@@ -46,10 +43,13 @@
     NSArray* preAlarmData;
     NSArray* methodData;
     NSArray* repeatData;
+    NSArray* armData;
     UIPickerView* preAlarmPicker;
     UIPickerView* repeatAlarmPicker;
     UIPickerView* methodPicker;
+    UIPickerView* armPicker;
     UIDatePicker* datePicker;
+    UIView* subview;
 }
 @property (strong, nonatomic) IBOutlet UILabel *state;
 @property (strong, nonatomic) IBOutlet UILabel *peripheralName;

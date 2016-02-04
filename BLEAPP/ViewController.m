@@ -22,8 +22,11 @@
 @synthesize dataLabel;
 @synthesize state;
 
-UIButton* weekButn[7];
-UIButton* armButn[2];
+//UIButton* weekButn[7];
+//UIButton* armButn[2];
+short seqNum;
+NSMutableArray* arrayOfSchedule;
+UILabel* seqNumLabel[10];
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,6 +36,8 @@ UIButton* armButn[2];
     RSSIButn.text = [RSSINumber stringValue];
     dataToDisplay = [[NSMutableString alloc] init];
     state.text = @"Not Connect";
+    seqNum = 1;
+    arrayOfSchedule = [NSMutableArray array];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,7 +136,7 @@ UIButton* armButn[2];
         [Butn3 setTitle: @"예  약" forState:UIControlStateNormal];
 //        [Butn3 setBackgroundColor:[UIColor grayColor]];
         [Butn3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [Butn3 addTarget:self action:@selector(reservationSchedule) forControlEvents:UIControlEventTouchUpInside];
+        [Butn3 addTarget:self action:@selector(reservationSchedule:) forControlEvents:UIControlEventTouchUpInside];
         Butn3.layer.borderColor = [UIColor brownColor].CGColor;
         Butn3.layer.cornerRadius = 5;
         Butn3.layer.borderWidth = 2;
@@ -227,9 +232,20 @@ UIButton* armButn[2];
     }
 }
 
+-(void)alertReservation{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"예약하기" message:@"예약 되었습니다." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 -(void)compareData : (NSArray*)recvDataArray{
     
     switch ([recvDataArray[1] intValue]) {
+            
+        case 31:
+            [self alertReservation];
+            break;
             
         case SVC_CALCULATE_DEGREE_NUM:
             state.font = [UIFont fontWithName:@"font" size:20];
@@ -278,66 +294,14 @@ UIButton* armButn[2];
 
 -(NSString*)hexToDec : (NSString*) string{
     unsigned value = 0;
+    int trueValue;
     NSScanner *scanner = [NSScanner scannerWithString:string];
     [scanner scanHexInt:&value];
-    string = [NSString stringWithFormat:@"%u", value];
+    trueValue = value;
+    trueValue = trueValue << 16;
+    trueValue = trueValue >> 16;
+    string = [NSString stringWithFormat:@"%d", trueValue];
     return string;
-}
-
-//1바이트 헥사 만들기
--(NSString*)decToHex : (NSString*) data{
-    int intForHex = [data intValue];
-    short a = intForHex / 16;
-    short b = intForHex % 16;
-    NSMutableString* string = [NSMutableString string];
-    switch (a) {
-        case 15:
-            [string appendString:@"f"];
-            break;
-        case 14:
-            [string appendString:@"e"];
-            break;
-        case 13:
-            [string appendString:@"d"];
-            break;
-        case 12:
-            [string appendString:@"c"];
-            break;
-        case 11:
-            [string appendString:@"b"];
-            break;
-        case 10:
-            [string appendString:@"a"];
-            break;
-        default:
-            [string appendString:[NSString stringWithFormat:@"%d",a]];
-            break;
-    }
-    switch (b) {
-        case 15:
-            [string appendString:@"f"];
-            break;
-        case 14:
-            [string appendString:@"e"];
-            break;
-        case 13:
-            [string appendString:@"d"];
-            break;
-        case 12:
-            [string appendString:@"c"];
-            break;
-        case 11:
-            [string appendString:@"b"];
-            break;
-        case 10:
-            [string appendString:@"a"];
-            break;
-        default:
-            [string appendString:[NSString stringWithFormat:@"%d",b]];
-            break;
-    }
-    data = string;
-    return data;
 }
 
 -(void)sendStartDataToBand{
@@ -368,180 +332,185 @@ UIButton* armButn[2];
 }
 
 //예약 ui 만들기
--(void)reservationSchedule{
-    UIButton* reservationButn = [[UIButton alloc] initWithFrame:CGRectMake(680, 440, 80, 21)];
+-(IBAction)reservationSchedule:(UIButton*)sender{
+    if([sender isSelected])
+        return;
+    UIButton* reservationButn = [[UIButton alloc] initWithFrame:CGRectMake(640, 580, 80, 21)];
     [reservationButn setTitle:@"예약하기" forState:UIControlStateNormal];
     [reservationButn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [reservationButn addTarget:self action:@selector(reservation) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:reservationButn];
-    
-    UILabel* selectDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 481, 60, 21)];
+//
+    UILabel* selectDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 581, 60, 21)];
     selectDataLabel.text = @"예약일정";
     selectDataLabel.font = [UIFont systemFontOfSize:17];
     [self.view addSubview:selectDataLabel];
-    datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(80, 481, 300, 120)];
+    datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(80, 581, 300, 120)];
     datePicker.minimumDate = [[NSDate alloc] init];
     [self.view addSubview:datePicker];
+//
+//    
+//    UILabel* repeatInterval = [[UILabel alloc] initWithFrame:CGRectMake(450, 481, 80, 21)];
+//    repeatInterval.text = @"반복시간 :";
+//    repeatInterval.font = [UIFont systemFontOfSize:17];
+//    [self.view addSubview:repeatInterval];
+//    repeatData = [NSArray arrayWithObjects:@"없음",@"10분 후",@"5분 후", nil];
+//    repeatAlarmPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(540, 481, 200, 120)];
+//    repeatAlarmPicker.delegate = self;
+//    repeatAlarmPicker.dataSource = self;
+//    [self.view addSubview:repeatAlarmPicker];
+//    
+//    UILabel* preAlarm = [[UILabel alloc] initWithFrame:CGRectMake(80, 650, 80, 21)];
+//    preAlarm.text = @"미리알람 :";
+//    preAlarm.font = [UIFont systemFontOfSize:17];
+//    [self.view addSubview:preAlarm];
+//    preAlarmData = [NSArray arrayWithObjects:@"없음",@"하루 전",@"1시간 전", @"30분 전", nil];
+//    preAlarmPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(165, 650, 200, 120)];
+//    preAlarmPicker.delegate = self;
+//    preAlarmPicker.dataSource = self;
+//    [self.view addSubview:preAlarmPicker];
+//    
+//    UILabel* alarmMethod = [[UILabel alloc] initWithFrame:CGRectMake(400, 650, 80, 21)];
+//    alarmMethod.text = @"알림방법 :";
+//    alarmMethod.font = [UIFont systemFontOfSize:17];
+//    [self.view addSubview:alarmMethod];
+//    methodData = [NSArray arrayWithObjects:@"진동",@"팝업",@"진동 및 팝업", @"음성 메시지", @"진동 및 음성", @"팝업 및 음성", @"모두", nil];
+//    methodPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(490, 650, 200, 120)];
+//    methodPicker.delegate = self;
+//    methodPicker.dataSource = self;
+//    [self.view addSubview:methodPicker];
+//    
+//    UILabel* weeklyRepeat = [[UILabel alloc] initWithFrame:CGRectMake(80, 800, 80, 21)];
+//    weeklyRepeat.text = @"주간반복";
+////    weeklyRepeat.font = [UIFont systemFontOfSize:17];
+//    [self.view addSubview:weeklyRepeat];
+//    NSArray* weekArray = [NSArray arrayWithObjects:@"월", @"화", @"수", @"목", @"금", @"토", @"일", nil];
+//    for (int i=0; i<7; i++) {
+//        weekButn[i] = [[UIButton alloc] initWithFrame:CGRectMake(80+40*i, 830, 30, 30)];
+//        [weekButn[i] setTitle:weekArray[i] forState:UIControlStateNormal];
+//        [weekButn[i] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+//        [weekButn[i] setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+//        weekButn[i].layer.borderColor = [UIColor whiteColor].CGColor;
+//        weekButn[i].layer.borderWidth = 1;
+//        weekButn[i].layer.cornerRadius = 4;
+//        [weekButn[i] addTarget:self action:@selector(butnDidChangeState:) forControlEvents:UIControlEventTouchUpInside];
+//        [self.view addSubview: weekButn[i]];
+//    }
     
+    [sender setSelected:YES];
     
-    UILabel* repeatInterval = [[UILabel alloc] initWithFrame:CGRectMake(450, 481, 80, 21)];
-    repeatInterval.text = @"반복시간 :";
-    repeatInterval.font = [UIFont systemFontOfSize:17];
-    [self.view addSubview:repeatInterval];
-    repeatData = [NSArray arrayWithObjects:@"없음",@"10분 후",@"5분 후", nil];
-    repeatAlarmPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(540, 481, 200, 120)];
-    repeatAlarmPicker.delegate = self;
-    repeatAlarmPicker.dataSource = self;
-    [self.view addSubview:repeatAlarmPicker];
-    
-    UILabel* preAlarm = [[UILabel alloc] initWithFrame:CGRectMake(80, 650, 80, 21)];
-    preAlarm.text = @"미리알람 :";
-    preAlarm.font = [UIFont systemFontOfSize:17];
-    [self.view addSubview:preAlarm];
-    preAlarmData = [NSArray arrayWithObjects:@"없음",@"하루 전",@"1시간 전", @"30분 전", nil];
-    preAlarmPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(165, 650, 200, 120)];
-    preAlarmPicker.delegate = self;
-    preAlarmPicker.dataSource = self;
-    [self.view addSubview:preAlarmPicker];
-    
-    UILabel* alarmMethod = [[UILabel alloc] initWithFrame:CGRectMake(400, 650, 80, 21)];
-    alarmMethod.text = @"알림방법 :";
-    alarmMethod.font = [UIFont systemFontOfSize:17];
-    [self.view addSubview:alarmMethod];
-    methodData = [NSArray arrayWithObjects:@"진동",@"팝업",@"진동 및 팝업", @"음성 메시지", @"진동 및 음성", @"팝업 및 음성", @"모두", nil];
-    methodPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(490, 650, 200, 120)];
-    methodPicker.delegate = self;
-    methodPicker.dataSource = self;
-    [self.view addSubview:methodPicker];
-    
-    UILabel* weeklyRepeat = [[UILabel alloc] initWithFrame:CGRectMake(80, 800, 80, 21)];
-    weeklyRepeat.text = @"주간반복";
-//    weeklyRepeat.font = [UIFont systemFontOfSize:17];
-    [self.view addSubview:weeklyRepeat];
-    NSArray* weekArray = [NSArray arrayWithObjects:@"월", @"화", @"수", @"목", @"금", @"토", @"일", nil];
-    for (int i=0; i<7; i++) {
-        weekButn[i] = [[UIButton alloc] initWithFrame:CGRectMake(80+40*i, 830, 30, 30)];
-        [weekButn[i] setTitle:weekArray[i] forState:UIControlStateNormal];
-        [weekButn[i] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [weekButn[i] setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-        weekButn[i].layer.borderColor = [UIColor blueColor].CGColor;
-        weekButn[i].layer.borderWidth = 1;
-        weekButn[i].layer.cornerRadius = 4;
-        [weekButn[i] addTarget:self action:@selector(butnDidChangeState:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview: weekButn[i]];
-    }
-    
-    UILabel* kindofArm = [[UILabel alloc] initWithFrame:CGRectMake(400, 800, 80, 21)];
+    UILabel* kindofArm = [[UILabel alloc] initWithFrame:CGRectMake(80, 750, 80, 21)];
     kindofArm.text = @"측정부위 :";
     kindofArm.font = [UIFont systemFontOfSize:17];
     [self.view addSubview:kindofArm];
-    NSArray* armArray = [NSArray arrayWithObjects:@"왼 팔", @"오른팔", nil];
-    for (int i=0; i<2; i++) {
-        armButn[i] = [[UIButton alloc] initWithFrame:CGRectMake(490+65*i, 800, 60, 30)];
-        [armButn[i] setTitle:armArray[i] forState:UIControlStateNormal];
-        [armButn[i] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [armButn[i] setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-        armButn[i].layer.borderColor = [UIColor grayColor].CGColor;
-        armButn[i].layer.borderWidth = 1;
-        armButn[i].layer.cornerRadius = 4;
-        [armButn[i] addTarget:self action:@selector(armButnDidChangeState:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview: armButn[i]];
-    }
-    [armButn[0] setSelected:YES];
-    armButn[0].layer.backgroundColor = [UIColor grayColor].CGColor;
+    armData = [NSArray arrayWithObjects:@"왼팔",@"오른팔",@"왼팔(등 뒤)", @"오른팔(등 뒤)", nil];
+    armPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(165, 750, 200, 120)];
+    armPicker.delegate = self;
+    armPicker.dataSource = self;
+    [self.view addSubview:armPicker];
+    
+    seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
+    seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
+    seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+    seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+    seqNumLabel[seqNum-1].layer.borderWidth = 1;
+    seqNumLabel[seqNum-1].layer.cornerRadius = 4;
+    seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:seqNumLabel[seqNum-1]];
 }
 
--(IBAction)butnDidChangeState:(UIButton*)sender{
-    if(![sender isSelected]){
-        sender.layer.borderColor = [UIColor grayColor].CGColor;
-        sender.layer.backgroundColor = [UIColor whiteColor].CGColor;
-    }else{
-        sender.layer.borderColor = [UIColor whiteColor].CGColor;
-        sender.layer.backgroundColor = [UIColor grayColor].CGColor;
-    }
-}
+//-(IBAction)butnDidChangeState:(UIButton*)sender{
+//    if([sender isSelected]){
+//        sender.layer.borderColor = [UIColor whiteColor].CGColor;
+//        [sender setSelected:NO];
+//    }else{
+//        sender.layer.borderColor = [UIColor blackColor].CGColor;
+//        [sender setSelected:YES];
+//    }
+//}
 
--(IBAction)armButnDidChangeState:(UIButton*)sender{
-    if([sender isEqual:armButn[0]]){
-        if(![sender isSelected]){
-            sender.layer.borderColor = [UIColor grayColor].CGColor;
-            sender.layer.backgroundColor = [UIColor whiteColor].CGColor;
-            [armButn[1] setSelected:YES];
-        }else{
-            sender.layer.borderColor = [UIColor whiteColor].CGColor;
-            sender.layer.backgroundColor = [UIColor grayColor].CGColor;
-            [armButn[1] setSelected:NO];
-        }
-    }else{
-        if(![sender isSelected]){
-            sender.layer.borderColor = [UIColor grayColor].CGColor;
-            sender.layer.backgroundColor = [UIColor whiteColor].CGColor;
-            [armButn[0] setSelected:YES];
-        }else{
-            sender.layer.borderColor = [UIColor whiteColor].CGColor;
-            sender.layer.backgroundColor = [UIColor grayColor].CGColor;
-            [armButn[0] setSelected:NO];
-        }
-    }
-}
-
+// 예약하기 버튼 누를 시 수행
 -(void)reservation{
-    UInt8 data1[19] = {0x88, 0x31, 0x13, 0x15, 0x01, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};           //보낼 데이터
+    UInt8 data[3][19] = {{0x88, 0x31, 0x13, 0x0f, 0x01, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0x88, 0x31, 0x23, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0x88, 0x31, 0x33, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};           //보낼 데이터
+    data[0][5]=seqNum;
     NSString* date = [NSString stringWithFormat:@"%@",datePicker.date];
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSRange range;
     range.length = 2;
-    NSString* dateOfData[7]; // year1, year2, month, day, time, minute, second
+    NSString* dateOfData[4]; // year1, year2, month, day, hour, minute, second
     dateOfData[0] = [date substringToIndex:2];
-    data1[6] = [dateOfData[0] intValue];
-    range.location = 2;
-    dateOfData[1] = [date substringWithRange:range];
-    data1[7] = [dateOfData[1] intValue];
+    data[0][6] = [dateOfData[0] intValue];
+    
     NSInteger hour = [gregorianCalendar component:NSCalendarUnitHour fromDate:datePicker.date];
     for(int i=1;i<4;i++){
         range.location = i*3-1;
         dateOfData[i] = [date substringWithRange:range];
-        data1[i+6] = [dateOfData[i] intValue];
+        data[0][i+6] = [dateOfData[i] intValue];
     }
-    data1[10] = hour;
-    data1[11] = [gregorianCalendar component:NSCalendarUnitMinute fromDate:datePicker.date];
-    data1[12] = [gregorianCalendar component:NSCalendarUnitSecond fromDate:datePicker.date];
+    data[0][10] = hour;
+    data[0][11] = [gregorianCalendar component:NSCalendarUnitMinute fromDate:datePicker.date];
+    data[0][12] = [gregorianCalendar component:NSCalendarUnitSecond fromDate:datePicker.date];
+//    data[0][13] = [preAlarmPicker selectedRowInComponent:0]+1;                  //미리알림
+//    
+//    for(int i=0 ; i<7 ; i++){                                                   //주간 반복
+//        if([weekButn[i] isSelected])
+//            data[0][14] += pow(2, 6-i);
+//    }
+//    
+//    data[0][15] = [methodPicker selectedRowInComponent:0]+1;                    //알람 방법
+//    data[0][16] = [repeatAlarmPicker selectedRowInComponent:0];                 //반복 알람
+    data[0][17] = [armPicker selectedRowInComponent:0]+1;                       //왼팔, 오른팔
     
-    //미리알림
-    data1[13] = [preAlarmPicker selectedRowInComponent:0]+1;
+    NSData* dataToSend[3];
     
-    //주간 반복
-    for(int i=0 ; i<7 ; i++){
-        if([weekButn[i] isSelected])
-            data1[14] += pow(2, 6-i);
+    for(int i=0 ; i<3; i++){
+        dataToSend[i] = [[NSData alloc] initWithBytes:&data[i] length:19];
+        [self sendDataToPeripheral:discoveredPeripheral data:dataToSend[i]];
     }
+    NSLog(@"%@",dataToSend[0]);
+    seqNum++;
+    if(seqNum > 10)
+        seqNum = 1;
     
-    //알람 방법
-    data1[15] = [methodPicker selectedRowInComponent:0]+1;
-    
-    //반복 알람
-    data1[16] = [repeatAlarmPicker selectedRowInComponent:0];
-    
-    //왼팔, 오른팔
-    if([armButn[0] isSelected])
-        data1[17] = 1;
-    else
-        data1[17] = 2;
-    
-    NSData* dataToSend = [[NSData alloc] initWithBytes:&data1 length:19];
-    NSLog(@"%@",dataToSend);
-//    [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
+    //시퀀스 넘버 라벨
+    if(!seqNumLabel[seqNum]){
+        seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
+        seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
+        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+        seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
+        seqNumLabel[seqNum-1].layer.borderWidth = 1;
+        seqNumLabel[seqNum-1].layer.cornerRadius = 4;
+        [self.view addSubview:seqNumLabel[seqNum-1]];
+        
+        seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
+        seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
+    }else{
+        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+        if(seqNum==1){
+            seqNumLabel[9].layer.borderColor = [UIColor blackColor].CGColor;
+            seqNumLabel[9].textColor = [UIColor blackColor];
+        }else{
+            seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
+            seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
+        }
+    }
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    if([pickerView isEqual:preAlarmPicker]){
-        return preAlarmData.count;
-    }else if([pickerView isEqual:repeatAlarmPicker]){
-        return repeatData.count;
-    }else if([pickerView isEqual:methodPicker]){
-        return methodData.count;
-    }
-    return 0;
+//    if([pickerView isEqual:preAlarmPicker]){
+//        return preAlarmData.count;
+//    }else if([pickerView isEqual:repeatAlarmPicker]){
+//        return repeatData.count;
+//    }else if([pickerView isEqual:methodPicker]){
+//        return methodData.count;
+//    }else if([pickerView isEqual:armPicker]){
+//        return armData.count;
+//    }
+    return armData.count;
 }
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
@@ -549,17 +518,16 @@ UIButton* armButn[2];
 }
 
 -(NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    if([pickerView isEqual:preAlarmPicker]){
-        return preAlarmData[row];
-    }else if([pickerView isEqual:repeatAlarmPicker]){
-        return repeatData[row];
-    }else if([pickerView isEqual:methodPicker]){
-        return methodData[row];
-    }
-    return 0;
+//    if([pickerView isEqual:preAlarmPicker]){
+//        return preAlarmData[row];
+//    }else if([pickerView isEqual:repeatAlarmPicker]){
+//        return repeatData[row];
+//    }else if([pickerView isEqual:methodPicker]){
+//        return methodData[row];
+//    }else if([pickerView isEqual:armPicker]){
+//        return armData[row];
+//    }
+    return armData[row];
 }
-- (IBAction)a:(UIButton *)sender {
-}
-- (IBAction)abc:(UIButton *)sender forEvent:(UIEvent *)event {
-}
+
 @end

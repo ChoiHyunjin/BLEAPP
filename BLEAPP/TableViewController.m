@@ -96,6 +96,9 @@
     viewController.centralManager = centralManager;
     [centralManager stopScan];
     viewController.RSSINumber = [RSSIArray objectAtIndex:indexPath.row];
+    [peripheralList removeAllObjects];
+    [RSSIArray removeAllObjects];
+    [uiTableView reloadData];
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
