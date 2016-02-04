@@ -467,23 +467,15 @@ UILabel* seqNumLabel[10];
 -(void)reservation{
     UInt8 data[3][19] = {{0x88, 0x31, 0x13, 0x0f, 0x01, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0x88, 0x31, 0x23, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0x88, 0x31, 0x33, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};           //보낼 데이터
+        {0x88, 0x31, 0x33, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};              //보낼 데이터
     data[0][5]=seqNum;
-    NSString* date = [NSString stringWithFormat:@"%@",datePicker.date];
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSRange range;
-    range.length = 2;
-    NSString* dateOfData[4]; // year1, year2, month, day, hour, minute, second
-    dateOfData[0] = [date substringToIndex:2];
-    data[0][6] = [dateOfData[0] intValue];
-    
-    NSInteger hour = [gregorianCalendar component:NSCalendarUnitHour fromDate:datePicker.date];
-    for(int i=1;i<4;i++){
-        range.location = i*3-1;
-        dateOfData[i] = [date substringWithRange:range];
-        data[0][i+6] = [dateOfData[i] intValue];
-    }
-    data[0][10] = hour;
+    NSInteger year = [gregorianCalendar component:NSCalendarUnitYear fromDate:datePicker.date];
+    data[0][6] = year % 256;
+    data[0][7] = year / 256;
+    data[0][8] = [gregorianCalendar component:NSCalendarUnitMonth fromDate:datePicker.date];
+    data[0][9] = [gregorianCalendar component:NSCalendarUnitDay fromDate:datePicker.date];
+    data[0][10] = [gregorianCalendar component:NSCalendarUnitHour fromDate:datePicker.date];
     data[0][11] = [gregorianCalendar component:NSCalendarUnitMinute fromDate:datePicker.date];
     data[0][12] = [gregorianCalendar component:NSCalendarUnitSecond fromDate:datePicker.date];
 //    data[0][13] = [preAlarmPicker selectedRowInComponent:0]+1;                  //미리알림
