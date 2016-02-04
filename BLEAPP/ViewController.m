@@ -132,15 +132,35 @@ UILabel* seqNumLabel[10];
         Butn2.layer.borderWidth = 2;
         [self.view addSubview:Butn2];
         
-        UIButton* Butn3 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH*2 + 30, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
-        [Butn3 setTitle: @"예  약" forState:UIControlStateNormal];
-//        [Butn3 setBackgroundColor:[UIColor grayColor]];
+        UIButton* Butn3 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH*2 + 30, BUTN_SIZE_Y, BUTN_SIZE_WIDTH*3/2, BUTN_SIZE_HEIGHT)];
+        [Butn3 setTitle: @"왼팔(등 뒤) 측정" forState:UIControlStateNormal];
+        //        [Butn2 setBackgroundColor:[UIColor grayColor]];
         [Butn3 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [Butn3 addTarget:self action:@selector(reservationSchedule:) forControlEvents:UIControlEventTouchUpInside];
+        [Butn3 addTarget:self action:@selector(sendStartData3) forControlEvents:UIControlEventTouchUpInside];
         Butn3.layer.borderColor = [UIColor brownColor].CGColor;
         Butn3.layer.cornerRadius = 5;
         Butn3.layer.borderWidth = 2;
         [self.view addSubview:Butn3];
+        
+        UIButton* Butn4 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH*7/2 + 45, BUTN_SIZE_Y, BUTN_SIZE_WIDTH*3/2, BUTN_SIZE_HEIGHT)];
+        [Butn4 setTitle: @"오른팔(등 뒤) 측정" forState:UIControlStateNormal];
+        //        [Butn3 setBackgroundColor:[UIColor grayColor]];
+        [Butn4 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [Butn4 addTarget:self action:@selector(sendStartData3) forControlEvents:UIControlEventTouchUpInside];
+        Butn4.layer.borderColor = [UIColor brownColor].CGColor;
+        Butn4.layer.cornerRadius = 5;
+        Butn4.layer.borderWidth = 2;
+        [self.view addSubview:Butn4];
+        
+        UIButton* Butn5 = [[UIButton alloc] initWithFrame:CGRectMake(BUTN_SIZE_X + BUTN_SIZE_WIDTH*5 + 60, BUTN_SIZE_Y, BUTN_SIZE_WIDTH, BUTN_SIZE_HEIGHT)];
+        [Butn5 setTitle: @"예  약" forState:UIControlStateNormal];
+//        [Butn3 setBackgroundColor:[UIColor grayColor]];
+        [Butn5 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [Butn5 addTarget:self action:@selector(reservationSchedule:) forControlEvents:UIControlEventTouchUpInside];
+        Butn5.layer.borderColor = [UIColor brownColor].CGColor;
+        Butn5.layer.cornerRadius = 5;
+        Butn5.layer.borderWidth = 2;
+        [self.view addSubview:Butn5];
     }
     else{
         [startButn addTarget:self action:@selector(sendStartDataToBand) forControlEvents:UIControlEventTouchUpInside];
@@ -305,7 +325,7 @@ UILabel* seqNumLabel[10];
 }
 
 -(void)sendStartDataToBand{
-    UInt8 dataInUint[7] = {0x88, 0xaa, 0x11, 0x03, 0xa4, 0x01, 0x01};           //보낼 데이터"
+    UInt8 dataInUint[7] = {0x88, 0xaa, 0x11, 0x03, 0xa4, 0x01, 0x01};           //보낼 데이터
     NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:7];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
     state.text = @"측정시작";
@@ -323,6 +343,20 @@ UILabel* seqNumLabel[10];
     NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:6];
     [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
     state.text = @"오른팔 측정시작";
+}
+
+-(void)sendStartData3{
+    UInt8 dataInUint[6] = {0x88, 0x61, 0x11, 0x02, 0x03, 0x03};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:6];
+    [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
+    state.text = @"왼팔(등 뒤) 측정시작";
+}
+
+-(void)sendStartData4{
+    UInt8 dataInUint[6] = {0x88, 0x61, 0x11, 0x02, 0x03, 0x04};           //보낼 데이터
+    NSData* dataToSend = [[NSData alloc] initWithBytes:&dataInUint length:6];
+    [self sendDataToPeripheral:discoveredPeripheral data:dataToSend];
+    state.text = @"오른팔(등 뒤) 측정시작";
 }
 
 -(void)sendDataToPeripheral : (CBPeripheral*)peripheral
