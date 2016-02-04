@@ -477,7 +477,7 @@ UILabel* seqNumLabel[10];
     data[0][9] = [gregorianCalendar component:NSCalendarUnitDay fromDate:datePicker.date];
     data[0][10] = [gregorianCalendar component:NSCalendarUnitHour fromDate:datePicker.date];
     data[0][11] = [gregorianCalendar component:NSCalendarUnitMinute fromDate:datePicker.date];
-    data[0][12] = [gregorianCalendar component:NSCalendarUnitSecond fromDate:datePicker.date];
+    data[0][12] = 0;
 //    data[0][13] = [preAlarmPicker selectedRowInComponent:0]+1;                  //미리알림
 //    
 //    for(int i=0 ; i<7 ; i++){                                                   //주간 반복
@@ -485,7 +485,7 @@ UILabel* seqNumLabel[10];
 //            data[0][14] += pow(2, 6-i);
 //    }
 //    
-//    data[0][15] = [methodPicker selectedRowInComponent:0]+1;                    //알람 방법
+    data[0][15] = 3;                                                                //알람 방법
 //    data[0][16] = [repeatAlarmPicker selectedRowInComponent:0];                 //반복 알람
     data[0][17] = [armPicker selectedRowInComponent:0]+1;                       //왼팔, 오른팔
     
