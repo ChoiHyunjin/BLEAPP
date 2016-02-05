@@ -24,9 +24,9 @@
 
 //UIButton* weekButn[7];
 //UIButton* armButn[2];
-short seqNum;
+//short seqNum;
 NSMutableArray* arrayOfSchedule;
-UILabel* seqNumLabel[10];
+//UILabel* seqNumLabel[10];
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -36,7 +36,7 @@ UILabel* seqNumLabel[10];
     RSSIButn.text = [RSSINumber stringValue];
     dataToDisplay = [[NSMutableString alloc] init];
     state.text = @"Not Connect";
-    seqNum = 1;
+//    seqNum = 1;
     arrayOfSchedule = [NSMutableArray array];
 }
 
@@ -443,14 +443,14 @@ UILabel* seqNumLabel[10];
     armPicker.dataSource = self;
     [self.view addSubview:armPicker];
     
-    seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
-    seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
-    seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
-    seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
-    seqNumLabel[seqNum-1].layer.borderWidth = 1;
-    seqNumLabel[seqNum-1].layer.cornerRadius = 4;
-    seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:seqNumLabel[seqNum-1]];
+//    seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
+//    seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
+//    seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+//    seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+//    seqNumLabel[seqNum-1].layer.borderWidth = 1;
+//    seqNumLabel[seqNum-1].layer.cornerRadius = 4;
+//    seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
+//    [self.view addSubview:seqNumLabel[seqNum-1]];
 }
 
 //-(IBAction)butnDidChangeState:(UIButton*)sender{
@@ -468,7 +468,7 @@ UILabel* seqNumLabel[10];
     UInt8 data[3][19] = {{0x88, 0x31, 0x13, 0x0f, 0x01, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0x88, 0x31, 0x23, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0x88, 0x31, 0x33, 0x0f, 0x01, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};              //보낼 데이터
-    data[0][5]=seqNum;
+//    data[0][5]=seqNum;
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSInteger year = [gregorianCalendar component:NSCalendarUnitYear fromDate:datePicker.date];
     data[0][6] = year % 256;
@@ -496,34 +496,34 @@ UILabel* seqNumLabel[10];
         [self sendDataToPeripheral:discoveredPeripheral data:dataToSend[i]];
     }
     NSLog(@"%@",dataToSend[0]);
-    seqNum++;
-    if(seqNum > 10)
-        seqNum = 1;
-    
+//    seqNum++;
+//    if(seqNum > 10)
+//        seqNum = 1;
+//    
     //시퀀스 넘버 라벨
-    if(!seqNumLabel[seqNum]){
-        seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
-        seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
-        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
-        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
-        seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
-        seqNumLabel[seqNum-1].layer.borderWidth = 1;
-        seqNumLabel[seqNum-1].layer.cornerRadius = 4;
-        [self.view addSubview:seqNumLabel[seqNum-1]];
-        
-        seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
-        seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
-    }else{
-        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
-        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
-        if(seqNum==1){
-            seqNumLabel[9].layer.borderColor = [UIColor blackColor].CGColor;
-            seqNumLabel[9].textColor = [UIColor blackColor];
-        }else{
-            seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
-            seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
-        }
-    }
+//    if(!seqNumLabel[seqNum]){
+//        seqNumLabel[seqNum-1] = [[UILabel alloc] initWithFrame:CGRectMake(40+40*seqNum, 520, 30, 30)];
+//        seqNumLabel[seqNum-1].text = [NSString stringWithFormat:@"%d",seqNum];
+//        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+//        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+//        seqNumLabel[seqNum-1].textAlignment = NSTextAlignmentCenter;
+//        seqNumLabel[seqNum-1].layer.borderWidth = 1;
+//        seqNumLabel[seqNum-1].layer.cornerRadius = 4;
+//        [self.view addSubview:seqNumLabel[seqNum-1]];
+//        
+//        seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
+//        seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
+//    }else{
+//        seqNumLabel[seqNum-1].layer.borderColor = [UIColor blueColor].CGColor;
+//        seqNumLabel[seqNum-1].textColor = [UIColor blueColor];
+//        if(seqNum==1){
+//            seqNumLabel[9].layer.borderColor = [UIColor blackColor].CGColor;
+//            seqNumLabel[9].textColor = [UIColor blackColor];
+//        }else{
+//            seqNumLabel[seqNum-2].layer.borderColor = [UIColor blackColor].CGColor;
+//            seqNumLabel[seqNum-2].textColor = [UIColor blackColor];
+//        }
+//    }
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
