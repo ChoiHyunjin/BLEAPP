@@ -99,12 +99,12 @@ NSMutableArray* arrayOfSchedule;
     NSLog(@"characteristics : %@",service.characteristics);
     NSLog(@"Update Notify");
     for (CBCharacteristic *characteristic in service.characteristics) {
-        if([characteristic.UUID isEqual:[CBUUID UUIDWithString:SEND_UUID]]&&(characteristic.properties == 0x08)){
+        if(([characteristic.UUID isEqual:[CBUUID UUIDWithString:SEND_UUID]])&&(characteristic.properties == 0x08)){
             writeCharacteristic = characteristic;
-        }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:NOTIFYCATION_UUID]]&&(characteristic.properties == 0x12)){
+        }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:NOTIFYCATION_UUID]]){
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
             notifyCharacteristic = characteristic;
-        }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:INDICATION_UUID]]||(characteristic.properties == 0x22)){
+        }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:INDICATION_UUID]]){
             readCharacteristic = characteristic;
         }
     }

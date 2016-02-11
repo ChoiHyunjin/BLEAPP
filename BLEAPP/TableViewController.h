@@ -15,8 +15,11 @@
     NSMutableArray* peripheralList;
     CBCentralManager* centralManager;
     NSMutableArray* RSSIArray;
+    NSMutableArray* addressArray;
     UITableView* uiTableView;
 }
 @property (strong, nonatomic) IBOutlet UITableView *uiTableView;
+
+- (IBAction)refresh:(id)sender;
 
 @end

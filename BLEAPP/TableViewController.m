@@ -21,6 +21,7 @@
     [super viewDidLoad];
     peripheralList = [[NSMutableArray alloc] init];
     RSSIArray = [[NSMutableArray alloc] init];
+    addressArray = [NSMutableArray array];
 //    uiTableView = [[UITableView alloc] init];
 
     centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
@@ -47,6 +48,7 @@
 }
 
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary*)advertisementData RSSI:(NSNumber *)RSSI{
+    NSLog(@"%@",peripheral);
     BOOL peripheralIdentifier = NO;
     for(int i=0;i<peripheralList.count;i++){
         if([peripheralList[i] isEqual:peripheral]){
@@ -59,10 +61,33 @@
     if(peripheralIdentifier == NO){
         [peripheralList addObject:peripheral];
         [RSSIArray addObject:RSSI];
+        [addressArray addObject:[self getAddress:advertisementData]];
         [uiTableView reloadData];
     }
 }
 
+-(NSString*)getAddress:(NSDictionary*)advertisementData{
+    NSData* manufacturerData = [advertisementData objectForKey:@"kCBAdvDataManufacturerData"];
+    if(!manufacturerData)
+        return @"";
+    const char *valueString = [[manufacturerData description] cStringUsingEncoding: NSUTF8StringEncoding];
+    NSMutableString* setString = [NSMutableString string];
+    NSString* string = [NSString stringWithUTF8String:valueString];
+    if(string.length < 16)
+        return @"";
+    NSRange range;
+    range.length = 2;
+    range.location = 7;
+    [setString appendString:[string substringWithRange:range]];
+    range.location += 1;
+    for (int i =0; i<3; i++) {
+        range.location += 2;
+        [setString appendString:@":"];
+        [setString appendString:[string substringWithRange:range]];
+    }
+    return setString;
+    
+}
 
 #pragma mark - Table view data source
 
@@ -82,9 +107,8 @@
 
     cell.peripheralName.text = cellPeripheral.name;
     cell.RSSI.text =[[RSSIArray objectAtIndex:indexPath.row] stringValue];
-    cell.address.text = cellPeripheral.identifier.UUIDString;
-    
-    // Configure the cell...
+//    cell.address.text = cellPeripheral.identifier.UUIDString;
+    cell.address.text = addressArray[indexPath.row];
     
     return cell;
 }
@@ -147,4 +171,12 @@
 }
 */
 
+- (IBAction)refresh:(id)sender {
+    [centralManager stopScan];
+    [peripheralList removeAllObjects];
+    [RSSIArray removeAllObjects];
+    [addressArray removeAllObjects];
+    [uiTableView reloadData];
+    [centralManager scanForPeripheralsWithServices:nil options:nil];
+}
 @end
